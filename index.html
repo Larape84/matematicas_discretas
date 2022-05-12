@@ -1,0 +1,764 @@
+  <!doctype html>
+  <html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Operaciones Teria de Conjunto</title>
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+  <div class="container" style="max-width: 800px;">
+  <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<!-- JavaScript Bundle with Popper -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+<!-- <link rel="stylesheet" href="/css/style.css" /> -->
+
+<div align="center" ><img src="img/logo.png" width="158" height="160" ></div>
+
+  <div class="text-center" style="margin: 20px 0px 20px 0px;">
+    
+  <a href="" target="_blank">Operaciones - Teoria de conjuntos</a><br>
+  <span class="text-secondary">Agregar o quitar los conjuntos necesarios requeridos para realizar las distintas operaciones</span>
+  <br>
+  <span class="text-secondary col-mb-6">Indique problema a analizar</span>
+  <textarea class="form-control" id="exampleFormControlTextarea1" rows="4">En un salón de clase hay 42 alumnos y se le pregunta sobre su animal favorito,
+    25 respondieron perro, 8 gato y 5 ambos. Al resto no le gusta ningún animal. 
+    A cuantos alumnos no le gustan los animales?
+    A cuantos alumnos solamente les gusta un animal?</textarea>
+  </div>
+
+
+  <div id="bloquearDIV" name="bloquearDIV"> 
+ <div class="text-center">
+  <span class="text-secondary col-mb-12">Introduzca el nombre de los conjuntos y sus valores</span>
+</div>
+<br>
+  <form method="post" action="">
+  <div class="row">
+  <div class="col-lg-12">
+  <div id="inputFormRow">
+  <div class="input-group mb-3">
+  <input type="text" name="conjuntos" id="conjunto1" class="form-control m-input col-lg-2" placeholder="Ingrese nombre del conjunto" autocomplete="on">
+  <input type="text" name="valores" id="valor1" class="form-control m-input" placeholder="Ingrese valor o valores separados por un espacio" autocomplete="on">
+
+  <div class="input-group-append"> 
+  <button id="removeRow" type="button" class="btn btn-danger" disabled="disabled" >Borrar</button>
+  </div>
+  </div>
+  </div>
+  
+  <div id="newRow"></div>
+  <button id="addRow" type="button" class="btn btn-primary">Agregar Conjuntos</button>
+  
+  </div>
+  
+</div>
+<br>
+<button id="mostarOperaciones" type="button" class="btn btn-dark"  width: 250px onclick="calcular()">Realizar Operaciones</button>
+
+  </div class="input-group mb-3">
+  <div> 
+  <button id="EditarConjuntos" type="button" class="btn btn-warning" style="display:none">Editar Conjuntos</button>
+</div>  
+</form>
+
+
+<script>
+
+  $('#mostarOperaciones').click(function (e) { 
+
+//captura de valores en los input para validar antes de continuar las operaciones    
+arreglovalores=[];
+arregloconjuntos=[];
+arreglovalor=document.getElementsByName('valores');
+arregloconjunto=document.getElementsByName('conjuntos');
+
+//para validar que haya valores en los input antes de realizar operaciones
+  for (x=0; x<arreglovalor.length; x++){
+  arreglovalores[x]=arreglovalor[x].value;
+  //alert (arreglovalores[x]);
+  if (arreglovalores[x]==""){
+    alert("Por favor asigne valor(es) a los conjunto(s)");
+    return
+  }
+
+}
+//para validar que haya valores en los input antes de realizar operaciones
+  for (x=0; x<arreglovalor.length; x++){
+  arregloconjuntos[x]=arregloconjunto[x].value;
+  //alert (arregloconjuntos[x]);
+  if (arregloconjuntos[x]==""){
+    alert("Por favor asigne un nombre al conjunto(s)");
+    return
+  }
+
+}
+
+    $('#bloquearDIV').find('input, select, textarea, checkbox, radio, button').attr('disabled', true); 
+    $('#DivRealizarOperaciones').css('display', 'block');
+    $('#addRow').css('display', 'none');
+    $('#EditarConjuntos').css('display', 'block');
+    $('#mostarOperaciones').css('display', 'none');
+    $('#BotonResolverOperaciones').css('display', 'block');
+    
+}) 
+
+$('#EditarConjuntos').click(function (e) { 
+    $('#bloquearDIV').find('input, select, textarea, checkbox, radio, button').attr('disabled', false); 
+    $('#DivRealizarOperaciones').css('display', 'none');
+    $('#addRow').css('display', 'block');
+    $('#EditarConjuntos').css('display', 'none');
+    $('#mostarOperaciones').css('display', 'block');
+    $('#removeRow').attr('disabled', true); 
+    $('#BotonResolverOperaciones').css('display', 'none');
+    $('#tabla').css('display', 'none');
+
+
+}) 
+
+</script>
+
+  <!-- para realizar calculos -->
+  <br>
+  <div name="DivRealizarOperaciones" id="DivRealizarOperaciones" class="DivRealizarOperaciones" style="display:none">
+  <div class="text-center">
+  <span class="text-secondary col-mb-12">Introduzca las operaciones que desea realizar con los conjuntos</span>
+</div>
+<br>
+  <form method="post" action="">
+    <div class="row">
+    <div class="col-lg-12">
+    <div id="inputFormRow1">
+    <div class="input-group mb-3">
+      <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="opcionesconjuntosgrupo1" id="opcionesconjuntosgrupo1">
+        <option selected></option>
+     
+      </select>
+      <select name="selector" class="form-select form-select-sm" aria-label=".form-select-sm example">
+        <option selected></option>
+        <option value="Union">Union</option>
+        <option value="Interseccion">Interseccion</option>
+        <option value="Diferencia">Diferencia</option>
+        <option value="Diferencia_simetrica">Diferencia_simetrica</option>
+        <option value="Complemento_de_un_conjunto">Complemento_de_un_conjunto</option>
+
+      </select>
+      <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="opcionesconjuntosgrupo2" id="opcionesconjuntosgrupo2">
+        <option selected></option>
+        
+      </select>
+  
+    <div class="input-group-append"> 
+    <button id="removeRow1" type="button" class="btn btn-danger" disabled="disabled">Borrar</button>
+    </div>
+    </div>
+    </div>
+    
+    <div id="newRow1"></div>
+    <button id="addRow1" type="button" class="btn btn-primary"  >Agregar Operaciones</button>
+    </div>
+    </div>
+    </form>
+  </div>
+    <br>
+    <button id="BotonResolverOperaciones" type="button" name="BotonResolverOperaciones" class="btn btn-success" onclick="Resolver()"  style="display:none" >Calcular</button>
+    <br>
+    </div>
+    
+    <br>
+  
+    <div name="tabla" id="tabla" style="display: none"> 
+    <div class="container col-10" id="newtable" >
+      <table class="table table-bordered table-active" id="tablaResultados" name="tablaResultados">
+        <thead>
+          <tr>
+            <th class="col-1" scope="col">Operacion ID</th>
+            <th class="col-lg-2" scope="col">Conjunto 1</th>
+            <th class="col-lg-1" scope="col">Operacion</th>
+            <th class="col-lg-2" scope="col">Conjunto 2</th>
+            <th class="col-lg-6" scope="col">Resultado</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoTabla">
+        </tbody>
+      </table>
+
+
+    </div></div>
+
+
+  </div>
+
+  
+  <script type="text/javascript">
+  // agregar registro
+  var id=1;
+
+  
+  $("#addRow").click(function () {
+    
+     id=id+1;
+
+  var html = '';
+  html += '<div id="inputFormRow">';
+  html += '<div class="input-group mb-3">';
+  html += '<input type="text" id ="conjunto'+id+'" name="conjuntos'+'"class="form-control m-input col-lg-2" placeholder="Ingrese nombre del conjunto" >';
+  html += '<input type="text" id ="valor'+id+'" name="valores'+'"class="form-control m-input" placeholder="Ingrese valor o valores separados por un espacio" >';
+  html += '<div class="input-group-append">';
+  html += '<button id="removeRow" type="button" class="btn btn-danger">Borrar</button>';
+  html += '</div>';
+  html += '</div>';
+  
+  $('#newRow').append(html);
+  });
+
+
+// borrar registro PARA VARIABLES
+
+function calcular(){
+
+  
+  
+
+
+// con esto, restablezco los select cada vez que se edita los conjuntos
+restablecervalores=document.getElementsByName('opcionesconjuntosgrupo1');
+
+for (s=0; s<restablecervalores.length; s++){
+document.getElementsByName('opcionesconjuntosgrupo1')[s].value = "";
+document.getElementsByName('opcionesconjuntosgrupo2')[s].value = "";
+document.getElementsByName('selector')[s].value = "";
+}
+
+
+arreglovalores=[];
+arregloconjuntos=[];
+arreglovalor=document.getElementsByName('valores');
+arregloconjunto=document.getElementsByName('conjuntos');
+
+
+
+  for (x=0; x<arreglovalor.length; x++){
+  arreglovalores[x]=arreglovalor[x].value;
+  //alert (arreglovalores[x]);
+
+}
+  for (x=0; x<arreglovalor.length; x++){
+  arregloconjuntos[x]=arregloconjunto[x].value;
+  //alert (arregloconjuntos[x]);
+
+}
+
+// capturo los nombres de los conjuntos que voy a eliminar
+const $select = document.querySelector("#opcionesconjuntosgrupo1");
+const $select2 = document.querySelector("#opcionesconjuntosgrupo2");
+
+//con este for elimino las opciones del select anteriores para que no se repitan
+for (let i = $select.options.length; i >= 1; i--) {
+    $select.remove(i);
+    $select2.remove(i);
+  }
+
+// con este for agrego a los select los nombres de los conjuntos
+for (n=0; n<arregloconjuntos.length; n++){
+$('#opcionesconjuntosgrupo1').append($('<option>', {value:arregloconjuntos[n], text:arregloconjuntos[n]}));
+$('#opcionesconjuntosgrupo2').append($('<option>', {value:arregloconjuntos[n], text:arregloconjuntos[n]}));
+}
+
+
+};
+
+
+$(document).on('click', '#removeRow', function () {
+
+   $(this).closest('#inputFormRow').remove();
+
+});
+
+
+var id2=3;
+
+  $("#addRow1").click(function () {
+
+ var html = '';
+ html += '<div id="inputFormRow1">';
+ html += '<div class="input-group mb-3">';
+ html += '<select class="form-select form-select-sm" aria-label=".form-select-sm example" name="opcionesconjuntosgrupo1" id="opcionesconjuntosgrupo'+id2+'" >';
+ html += '<option selected></option>'
+ 
+ //este id dinamico me indica los select que deben traer las opciones
+ id2=id2+1;
+ html += '</select>'
+ html += '<select name="selector" class="form-select form-select-sm" aria-label=".form-select-sm example">';
+ html += '<option selected></option>'
+ html += '<option value="Union">Union</option>'
+ html += '<option value="Interseccion">Interseccion</option>'
+ html += '<option value="Diferencia">Diferencia</option>'
+ html += '<option value="Diferencia_simetrica">Diferencia_simetrica</option>'
+ html += '<option value="Complemento_de_un_conjunto">Complemento_de_un_conjunto</option>'
+
+
+ html += '</select>'
+ 
+ html += '<select class="form-select form-select-sm" aria-label=".form-select-sm example" name="opcionesconjuntosgrupo2" id="opcionesconjuntosgrupo'+id2+'" >';
+ html += '<option selected></option>'
+ html += '</select>'
+ 
+
+ html += '<div class="input-group-append">';
+ html += '<button id="removeRow1" type="button" class="btn btn-danger">Borrar</button>';
+ html += '</div>';
+ html += '</div>';
+ 
+// se agrega dinamicamente una nueva linea para realizar las operaciones de los conjuntos
+ $('#newRow1').append(html);
+ 
+//con este for se agrega los nombres de los conjuntos a los select
+ for (n=0; n<arregloconjuntos.length; n++){
+$('#opcionesconjuntosgrupo'+(id2-1)).append($('<option>', {value:arregloconjuntos[n], text:arregloconjuntos[n]}));
+$('#opcionesconjuntosgrupo'+id2).append($('<option>', {value:arregloconjuntos[n], text:arregloconjuntos[n]}));
+}
+id2=id2+1;
+ });
+
+  
+  // borrar registro PARA CALCULOS
+  $(document).on('click', '#removeRow1', function () {
+  $(this).closest('#inputFormRow1').remove();
+
+  });
+
+  </script>
+
+
+<script  type="text/javascript">
+
+function Resolver(){
+
+  
+  // con esto elimino valores en la tabla cada vez que se requiere calcular los conjuntos
+  document.querySelectorAll("table tbody tr").forEach(function(e){e.remove()})
+
+  arregloSelectores=[];
+  arregloSelector=[];
+  arregloSelector=document.getElementsByName('selector');
+
+arreglogrupoconjuntos1=[];
+arreglogrupoconjuntos2=[];
+imprimir=0;
+
+valoresarreglogrupoconjuntos1=[];
+valoresarreglogrupoconjuntos2=[];
+valoresinput=[];
+conjuntosAsignados=[];
+nombreConjuntosAsignados=[];
+ResultadoCalculoOperaciones=[];
+
+arreglogrupoconjuntos1=document.getElementsByName('opcionesconjuntosgrupo1');
+arreglogrupoconjuntos2=document.getElementsByName('opcionesconjuntosgrupo2');
+arreglogrupovalores=document.getElementsByName('valores');
+nombreConjuntosAsignados=document.getElementsByName('conjuntos');
+
+
+//con este for capturo los nombres de los conjuntos select 1 y 2
+for (g=0; g<arreglogrupoconjuntos1.length; g++){
+
+valoresarreglogrupoconjuntos1[g]=arreglogrupoconjuntos1[g].value;
+valoresarreglogrupoconjuntos2[g]=arreglogrupoconjuntos2[g].value;
+if (valoresarreglogrupoconjuntos1[g]==""){
+      alert("Por favor seleccionar un conjunto derecho a trabajar");
+      imprimir=1;
+      return;
+    }else{ imprimir=0;}
+
+    if (valoresarreglogrupoconjuntos2[g]==""){
+      alert("Por favor seleccionar un conjunto izquierdo a trabajar");
+      imprimir=1;
+      return;
+    }else{ imprimir=0;}
+
+}
+
+//valido que se haya seleccionado las operaciones a realizar
+for (x=0; x<arregloSelector.length; x++){
+  arregloSelectores[x]=arregloSelector[x].value;
+
+    if (arregloSelectores[x]==""){
+      alert("Por favor seleccionar una operacion a realizar");
+      imprimir=1;
+      return;
+    }else{ imprimir=0;}
+
+  }
+
+
+  // muestro la tabla para resolver los ejercicios
+if (imprimir==0){
+  $('#tabla').css('display', 'block');
+}
+
+if (imprimir==1){
+  
+$('#tabla').css('display', 'none');
+}
+
+//con este for capturo los nombres y valores de los conjuntos
+for (g=0; g<arreglogrupovalores.length; g++){
+  valoresinput[g]=arreglogrupovalores[g].value;
+}
+
+for (g=0; g<arreglogrupovalores.length; g++){
+
+conjuntosAsignados[g]=new Array;
+conjuntosAsignados[g][0]=nombreConjuntosAsignados[g].value;
+conjuntosAsignados[g][1]=valoresinput[g]; 
+
+}
+
+h=1;
+dividir="";
+division="";
+
+//.split(" ", 3);
+// se realiza el for para separar los valores de cada input ingresado
+for (k=0; k<conjuntosAsignados.length; k++){
+
+  division=conjuntosAsignados[k][1];
+  division=division.split(" ");
+
+  for (j=0; j<=division.length; j++){
+    if (division[j]!=" " && division[j]!=undefined) {
+      conjuntosAsignados[k][h]=division[j];
+    h++;
+
+    }
+  
+  }
+  h=1;
+  
+}
+
+ lugar=0;
+ t=0;
+ r=0;
+ b=0;
+
+  for (z=0; z<arregloSelectores.length; z++){
+    b=0;
+    ResultadoCalculoOperaciones[z]=new Array;
+
+    //operacion Union de conjuntos
+    if (arregloSelectores[z]=="Union"){
+      
+      for (f=0; f<conjuntosAsignados.length; f++){
+
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos1[z]){
+        
+          for (q=1; q<=conjuntosAsignados[f].length; q++){
+              if(conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+          ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+            b++;}
+          
+          }
+        }
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos2[z]){
+           
+           for (q=1; q<=conjuntosAsignados[f].length; q++){
+
+            if (conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+           ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+             b++;
+            }
+            }
+
+         }
+      }
+      
+      //con esto elimino los valores duplicados del nuevo array 
+      ResultadoCalculoOperaciones[z] = ResultadoCalculoOperaciones[z].filter((item,index)=>{
+      return ResultadoCalculoOperaciones[z].indexOf(item) === index;
+    })
+    // ordeno los valores obtenidos de menor a mayor
+    ResultadoCalculoOperaciones[z]=ResultadoCalculoOperaciones[z].sort();
+    }
+
+    if (arregloSelectores[z]=="Interseccion"){
+
+      for (f=0; f<conjuntosAsignados.length; f++){
+
+//se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos1[z]){
+
+  for (q=1; q<=conjuntosAsignados[f].length; q++){
+      if(conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+  ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+    b++;}
+  
+  }
+}
+//se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos2[z]){
+   
+   for (q=1; q<=conjuntosAsignados[f].length; q++){
+
+    if (conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+   ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+     b++;
+    }
+    }
+
+ }
+}
+
+// ordeno los valores obtenidos de menor a mayor
+ResultadoCalculoOperaciones[z]=ResultadoCalculoOperaciones[z].sort();
+
+
+duplicados=[];
+//realizo un for para comparar valores duplicados, agregarlos a un array temporal para luego solo dejar los que se repiten
+for (i = 0; i < ResultadoCalculoOperaciones[z].length; i++) {
+  if (ResultadoCalculoOperaciones[z][i + 1] === ResultadoCalculoOperaciones[z][i]) {
+    duplicados.push(ResultadoCalculoOperaciones[z][i]); 
+  }
+}
+//dejo solo los que son duplicados.
+ResultadoCalculoOperaciones[z]=duplicados;
+
+    }
+
+    if (arregloSelectores[z]=="Diferencia"){  
+      prueba=0;
+      arreglotemporal=[];
+      for (f=0; f<conjuntosAsignados.length; f++){
+        t=0;
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos1[z]){
+        
+          for (q=1; q<=conjuntosAsignados[f].length; q++){
+              if(conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+          ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+            b++;}
+          
+          }
+        }
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos2[z]){
+           
+           for (q=1; q<=conjuntosAsignados[f].length; q++){
+
+            if (conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+           ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+             b++;
+             arreglotemporal[t]=conjuntosAsignados[f][q];
+             t++;
+            }
+            }
+
+         }
+      }
+      //con esto elimino los valores duplicados del nuevo array 
+      ResultadoCalculoOperaciones[z] = ResultadoCalculoOperaciones[z].filter((item,index)=>{
+      return ResultadoCalculoOperaciones[z].indexOf(item) === index;
+    })
+    // ordeno los valores obtenidos de menor a mayor
+    ResultadoCalculoOperaciones[z]=ResultadoCalculoOperaciones[z].sort();
+
+      // con este for elimino la diferencia del arreglo completo menos el arreglo que se esta restando
+      var array =ResultadoCalculoOperaciones[z];
+      for (i=0; i<=arreglotemporal.length; i++){
+
+        var index = array.indexOf(arreglotemporal[i]);
+        if (index > -1) {
+        array.splice(index, 1);
+      }
+
+      }
+
+
+    }
+
+      
+      if (arregloSelectores[z]=="Diferencia_simetrica"){ 
+
+      c=0;
+      prueba=0;
+      arreglotemporal=[];
+      arreglotemporal1=[];
+      for (f=0; f<conjuntosAsignados.length; f++){
+        t=0;
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos1[z]){
+        
+          for (q=1; q<=conjuntosAsignados[f].length; q++){
+              if(conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+          ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+          arreglotemporal1[c]=conjuntosAsignados[f][q];
+            b++;}
+            c++;
+          }
+        }
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos2[z]){
+           
+           for (q=1; q<=conjuntosAsignados[f].length; q++){
+
+            if (conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+           ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+             b++;
+             arreglotemporal[t]=conjuntosAsignados[f][q];
+             t++;
+            }
+            }
+
+         }
+      }
+      //con esto elimino los valores duplicados del nuevo array 
+      ResultadoCalculoOperaciones[z] = ResultadoCalculoOperaciones[z].filter((item,index)=>{
+      return ResultadoCalculoOperaciones[z].indexOf(item) === index;
+    })
+    // ordeno los valores obtenidos de menor a mayor
+    ResultadoCalculoOperaciones[z]=ResultadoCalculoOperaciones[z].sort();
+
+      // con este for elimino la diferencia del arreglo completo menos el arreglo que se esta restando que se encuentren en ambas matrices
+      var array =ResultadoCalculoOperaciones[z];
+      for (i=0; i<=arreglotemporal.length; i++){
+
+        for (r=0; r<=arreglotemporal1.length; r++){
+
+          if (arreglotemporal1[r]===arreglotemporal[i]){
+
+            var index = array.indexOf(arreglotemporal[i]);
+          if (index > -1) {
+        array.splice(index, 1);
+        }
+          }
+
+            if (arreglotemporal[i]===arreglotemporal1[r]){
+
+            var index = array.indexOf(arreglotemporal[i]);
+            if (index > -1) {
+            array.splice(index, 1);
+            }
+            }
+
+      }
+
+      }
+
+      }
+      
+
+      if (arregloSelectores[z]=="Complemento_de_un_conjunto"){
+        
+
+        c=0;
+      prueba=0;
+      arreglotemporalultimo1=[];
+      arreglotemporalultimo2=[];
+      for (f=0; f<conjuntosAsignados.length; f++){
+        t=0;
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos1[z]){
+        
+          for (q=1; q<=conjuntosAsignados[f].length; q++){
+              if(conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+          ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+          arreglotemporalultimo1[c]=conjuntosAsignados[f][q];
+            b++;}
+            c++;
+          }
+        }
+        //se realiza un ciclo para comparar el conjunto seleccionado con lista de conjuntos
+        if (conjuntosAsignados[f][0]==valoresarreglogrupoconjuntos2[z]){
+           
+           for (q=1; q<=conjuntosAsignados[f].length; q++){
+
+            if (conjuntosAsignados[f][q]!=undefined && conjuntosAsignados[f][q]!=""){
+           ResultadoCalculoOperaciones[z][b]=conjuntosAsignados[f][q];
+             b++;
+             arreglotemporalultimo2[t]=conjuntosAsignados[f][q];
+             t++;
+            }
+            }
+
+         }
+      }
+
+ //con esto elimino los valores duplicados del nuevo array 
+ ResultadoCalculoOperaciones[z] = ResultadoCalculoOperaciones[z].filter((item,index)=>{
+      return ResultadoCalculoOperaciones[z].indexOf(item) === index;
+    })
+    // ordeno los valores obtenidos de menor a mayor
+    ResultadoCalculoOperaciones[z]=ResultadoCalculoOperaciones[z].sort();
+
+    // con este for elimino la diferencia del arreglo que esta dentro de un arreglo mas grande
+    var array =ResultadoCalculoOperaciones[z];
+      for (i=0; i<=arreglotemporalultimo1.length; i++){
+
+        var index = array.indexOf(arreglotemporalultimo1[i]);
+        if (index > -1) {
+        array.splice(index, 1);
+      }
+
+      }
+      }
+    
+  }
+
+
+
+  n=0;
+  nointeracciones=[];
+  t=1;
+
+  const $cuerpoTabla = document.querySelector("#cuerpoTabla");
+    
+  arregloSelectores.forEach(arraySelector => {
+        
+    const $tr = document.createElement("tr");
+   
+    let $vuelta = document.createElement("td");
+    $vuelta.textContent = t; 
+    $tr.appendChild($vuelta);
+    t++;
+    
+    let $nombreconjunto1 = document.createElement("td");
+    $nombreconjunto1.textContent = valoresarreglogrupoconjuntos1[n];
+    $tr.appendChild($nombreconjunto1);
+    
+    let $selectorOperacion = document.createElement("td");
+    $selectorOperacion.textContent = arregloSelectores[n];
+    $tr.appendChild($selectorOperacion);
+
+    let $nombreconjunto2 = document.createElement("td");
+    $nombreconjunto2.textContent = valoresarreglogrupoconjuntos2[n];
+    $tr.appendChild($nombreconjunto2);
+
+    let $ResultadoOperacion = document.createElement("td");
+    $ResultadoOperacion.textContent = ResultadoCalculoOperaciones[n];
+    $tr.appendChild($ResultadoOperacion);
+  
+    n++;
+    $cuerpoTabla.appendChild($tr);
+    
+    
+    });
+
+  
+}
+
+
+</script>
+
+  <br>
+  <br>
+  </body>
+  </html>
